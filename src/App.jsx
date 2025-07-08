@@ -6,7 +6,6 @@ import { pink } from '@mui/material/colors'
 
 function App() {
 
-
   return (
     <>
       <div>Trung hieu</div>
