@@ -3,7 +3,6 @@ import AccessAlarmIcon from '@mui/icons-material/AccessAlarm'
 import ThreeDRotation from '@mui/icons-material/ThreeDRotation'
 import HomeIcon from '@mui/icons-material/Home'
 import { pink } from '@mui/material/colors'
-// import TabIndicatoyarr from '@mui/material/Tabs/TabIndicator'
 
 function App() {
   return (
