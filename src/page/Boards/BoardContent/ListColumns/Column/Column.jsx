@@ -23,6 +23,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
+import { toast } from 'react-toastify'
 
 
 function Column({ column }) {
@@ -53,6 +54,7 @@ function Column({ column }) {
   const [newCardTitle, setNewCardTitle] = useState('')
   const addNewCard = () => {
     if (!newCardTitle) {
+      toast.error('Please enter Card Title')
       return
     }
 
@@ -177,7 +179,7 @@ function Column({ column }) {
               gap: 1
             }}>
               <TextField
-                label="Enter column title"
+                label="Enter Card title"
                 type="text"
                 size='small'
                 variant='outlined'
