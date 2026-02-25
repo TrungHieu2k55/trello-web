@@ -2,15 +2,16 @@ import { useColorScheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sort'
-
+import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensors'
 import { DndContext, PointerSensor, useSensor, useSensors,
-  MouseSensor, TouchSensor, DragOverlay, defaultDropAnimationSideEffects, closestCorners } from '@dnd-kit/core'
+  DragOverlay, defaultDropAnimationSideEffects, closestCorners } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { cloneDeep } from 'lodash'
 
 import { useState, useEffect } from 'react'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
+
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
