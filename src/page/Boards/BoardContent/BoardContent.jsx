@@ -6,11 +6,12 @@ import { MouseSensor, TouchSensor } from '~/customLibraries/DndKitSensors'
 import { DndContext, PointerSensor, useSensor, useSensors,
   DragOverlay, defaultDropAnimationSideEffects, closestCorners } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, debounce, isEmpty } from 'lodash'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
+import { generatePlaceholderCard } from '~/utils/formatters'
 
 
 const ACTIVE_DRAG_ITEM_TYPE = {
@@ -18,7 +19,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board }) {
+function BoardContent({ board, createNewColumn, createNewCard }) {
   // dùng PointerSensor mặc định thì phải kết hợp thuộc tính touchAction: 'none' ở phần tử kéo thả còn bug
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -39,6 +40,7 @@ function BoardContent({ board }) {
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
+
 
   useEffect(() => {
     setOderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
@@ -85,6 +87,10 @@ function BoardContent({ board }) {
         //column khác)
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
 
+        if (isEmpty(nextActiveColumn.cards)) {
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+        }
+
         //cập nhật lại mảng cardOrderIds cho chuẩn dữ liệu
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
       }
@@ -110,6 +116,23 @@ function BoardContent({ board }) {
     })
   }
 
+  // fix lỗi Maximum update depth exceeded bằng debounced
+  // https://github.com/clauderic/dnd-kit/issues/1678
+  const debouncedMoveCard = useCallback (
+    debounce((overColumn, overCardId, active, over, activeColumn, activeDraggingCardId, activeDraggingCardData) => {
+      moveCardBetweenDifferentColumns(
+        overColumn,
+        overCardId,
+        active,
+        over,
+        activeColumn,
+        activeDraggingCardId,
+        activeDraggingCardData
+      )
+    }, 100),
+    []
+  )
+
   const handleDragStart = (event) => {
     // console.log('Drag Started', event)
     setActiveDragItemId(event?.active?.id)
@@ -121,6 +144,7 @@ function BoardContent({ board }) {
       setOldColumnWhenDraggingCard(findColumnByCardId(event?.active?.id))
     }
   }
+
 
   // Trigger trong quá trình kéo (drag) một phần tử
   const handleDragOver = (event) => {
@@ -151,7 +175,7 @@ function BoardContent({ board }) {
     // vì đây đang là đoạn xử lý lúc kéo (handleDragover), còn xử lý lúc kéo xong xuôi thì nó lại là vấn đề
     //khác ở (handleDragEnd)
     if (activeColumn._id !== overColumn._id) {
-      moveCardBetweenDifferentColumns(
+      debouncedMoveCard(
         overColumn,
         overCardId,
         active,
@@ -276,7 +300,11 @@ function BoardContent({ board }) {
         height: (theme) => theme.trello.boardContentHeight,
         p: '10px 0'
       }}>
-        <ListColumns columns={ oderedColumns } />
+        <ListColumns
+          columns={ oderedColumns }
+          createNewColumn={createNewColumn}
+          createNewCard={createNewCard}
+        />
         <DragOverlay dropAnimation={dropAnimation}>
           {(!activeDragItemType) && null}
           {(activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}
