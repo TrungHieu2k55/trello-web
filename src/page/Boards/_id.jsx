@@ -4,7 +4,7 @@ import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
 
 // import { mockData } from '~/apis/mock-data'
-import { fetchBoardDetailsAPI } from '~/apis/index'
+import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI } from '~/apis/index'
 import { useState, useEffect } from 'react'
 
 
@@ -19,11 +19,54 @@ function Board() {
     })
   }, [])
 
+  // Func gọi API tạo mới Column làm lại dữ liệu state board
+  const createNewColumn = async (newColumnData) => {
+
+    // Gọi API tạo column mới
+    const createdColumn = await createNewColumnAPI({
+      ...newColumnData,
+      boardId: board._id // hoặc boardId nếu tên biến là boardId
+    })
+
+    // Cập nhật state board
+    const newBoard = { ...board }
+    board.columns.push(createdColumn)
+    board.columnOrderIds.push(createdColumn._id)
+
+    // Cập nhật state
+    setBoard(newBoard)
+  }
+
+  // Func gọi API tạo mới Card làm lại dữ liệu state board
+  const createNewCard = async (newCardData) => {
+    // Gọi API tạo column mới
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id // hoặc boardId nếu tên biến là boardId
+    })
+
+    // Cập nhật state board
+    const newBoard = { ...board }
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards.push(createdCard)
+      columnToUpdate.cardOrderIds.push(createdCard._id)
+    }
+
+
+    // Cập nhật state
+    setBoard(newBoard)
+  }
+
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
       <AppBar />
       <BoardBar board={board}/>
-      <BoardContent board={board}/>
+      <BoardContent
+        board={board}
+        createNewCard={createNewCard}
+        createNewColumn={createNewColumn}
+      />
     </Container>
   )
 }

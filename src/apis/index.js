@@ -6,3 +6,13 @@ export const fetchBoardDetailsAPI = async (boardId) => {
   // axios trả về kết quả property của nó là data
   return response.data
 }
+
+export const createNewColumnAPI = async (newColumnData) => {
+  const response = await axios.post(`${API_ROOT}/v1/columns`, newColumnData)
+  return response.data
+}
+
+export const createNewCardAPI = async (newCardData) => {
+  const response = await axios.post(`${API_ROOT}/v1/cards`, newCardData)
+  return response.data
+}
