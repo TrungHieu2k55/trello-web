@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
 
-function ListColumns( { columns, createNewColumn, createNewCard} ) {
+function ListColumns( { columns, createNewColumn, createNewCard } ) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
 
@@ -19,13 +19,12 @@ function ListColumns( { columns, createNewColumn, createNewCard} ) {
       return
     }
 
-    //Gọi API
+    // Dữ liệu Columm
     const newColumnData = {
       title: newColumnTitle
     }
 
     await createNewColumn(newColumnData)
-
     // Đóng trạng thái thêm column và clear input
     toggleOpenNewColumnForm()
     setNewColumnTitle('')
@@ -50,7 +49,8 @@ function ListColumns( { columns, createNewColumn, createNewCard} ) {
           <Column
             key={column._id}
             column={column}
-            createNewCard={createNewCard} />
+            createNewCard={createNewCard}
+          />
         )}
 
         { /* Add new column button */ }

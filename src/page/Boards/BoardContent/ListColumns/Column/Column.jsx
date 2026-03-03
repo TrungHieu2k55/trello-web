@@ -58,12 +58,14 @@ function Column({ column, createNewCard }) {
       return
     }
 
-    //Gọi API
+    // Dữ liệu Columm
     const newCardData = {
       title: newCardTitle,
       columnId: column._id
     }
+
     await createNewCard(newCardData)
+
     // Đóng trạng thái thêm Card và clear input
     toggleOpenNewCardForm()
     setNewCardTitle('')
