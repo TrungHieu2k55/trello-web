@@ -19,7 +19,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   // dùng PointerSensor mặc định thì phải kết hợp thuộc tính touchAction: 'none' ở phần tử kéo thả còn bug
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -256,9 +256,11 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         // code arraymove dnt-kit/package/sortable/src/utilities/arrayMove.ts
         const dndOrderedColumns = arrayMove(oderedColumns, oldColumnIndex, newColumnIndex)
 
-        // xử lý gọi  api
         // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
         // console.log('dndOrderedColumnsIds', dndOrderedColumnsIds )
+        // xử lý gọi prop lên cha
+        moveColumns(dndOrderedColumns)
+
         setOderedColumns(dndOrderedColumns)
       }
     }
