@@ -8,12 +8,12 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
 
-function ListColumns( { columns, createNewColumn, createNewCard } ) {
+function ListColumns( { columns, createNewColumn, createNewCard, moveCards } ) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = async () => {
+  const addNewColumn = () => {
     if (!newColumnTitle) {
       toast.error('Please enter Column Title')
       return
@@ -24,7 +24,7 @@ function ListColumns( { columns, createNewColumn, createNewCard } ) {
       title: newColumnTitle
     }
 
-    await createNewColumn(newColumnData)
+    createNewColumn(newColumnData)
     // Đóng trạng thái thêm column và clear input
     toggleOpenNewColumnForm()
     setNewColumnTitle('')

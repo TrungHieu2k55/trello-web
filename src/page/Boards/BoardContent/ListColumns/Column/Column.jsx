@@ -52,7 +52,7 @@ function Column({ column, createNewCard }) {
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
 
   const [newCardTitle, setNewCardTitle] = useState('')
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title')
       return
@@ -64,7 +64,7 @@ function Column({ column, createNewCard }) {
       columnId: column._id
     }
 
-    await createNewCard(newCardData)
+    createNewCard(newCardData)
 
     // Đóng trạng thái thêm Card và clear input
     toggleOpenNewCardForm()
