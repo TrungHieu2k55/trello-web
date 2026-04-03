@@ -11,9 +11,11 @@ import { fetchBoardDetailsAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
   updateColumnsDetailsAPI,
-  moveCardToDifferentColumnAPI
+  moveCardToDifferentColumnAPI,
+  deleteColumnDetailsAPI
 } from '~/apis/index'
 import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 
 function Board() {
@@ -117,6 +119,20 @@ function Board() {
     })
   }
 
+  // function xóa column và card trong column
+  const deleteColumnDetails = (columnId) => {
+    //Update board state
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    setBoard(newBoard)
+
+    //api
+    deleteColumnDetailsAPI(columnId).then(res => {
+      toast.success(res?.deleteResult)
+    })
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -140,6 +156,7 @@ function Board() {
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
         moveCardToDifferentColumn={moveCardToDifferentColumn}
+        deleteColumnDetails={deleteColumnDetails}
       />
     </Container>
   )

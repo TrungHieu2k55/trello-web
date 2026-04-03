@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
 
-function ListColumns( { columns, createNewColumn, createNewCard, moveCards } ) {
+function ListColumns( { columns, createNewColumn, createNewCard, moveCards, deleteColumnDetails } ) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
 
@@ -50,6 +50,7 @@ function ListColumns( { columns, createNewColumn, createNewCard, moveCards } ) {
             key={column._id}
             column={column}
             createNewCard={createNewCard}
+            deleteColumnDetails={deleteColumnDetails}
           />
         )}
 
