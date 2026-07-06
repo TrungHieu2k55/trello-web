@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import svgr from 'vite-plugin-svgr'
 
+
 // https://vite.dev/config/
 export default defineConfig({
   // Cho phép vite xài process.env, bình thường xài meta.env

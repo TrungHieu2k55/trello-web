@@ -9,11 +9,14 @@ import { ToastContainer } from 'react-toastify'
 // Cấu hình Mui Dialog
 import { ConfirmProvider } from 'material-ui-confirm'
 
+// Cấu hình Redux Store
+import { Provider } from 'react-redux'
+import { store } from '~/redux/store'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  <Provider store={store}>
     <ThemeProvider theme={theme}>
-      <ConfirmProvider defaultOptions={{ 
+      <ConfirmProvider defaultOptions={{
         allowClose: false,
         dialogProps: { maxWidth : 'xs' },
         cancellationButtonProps: { color: 'inherit' },
@@ -25,5 +28,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <ToastContainer theme='colored' />
       </ConfirmProvider>
     </ThemeProvider>
-  </React.StrictMode>
+  </Provider>
 )
