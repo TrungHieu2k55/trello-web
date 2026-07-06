@@ -7,13 +7,22 @@ import { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import TextField from '@mui/material/TextField'
 import { toast } from 'react-toastify'
+import { createNewColumnAPI } from '~/apis/index'
+import { generatePlaceholderCard } from '~/utils/formatters'
+import { fetchBoardDetailsAPI, updateCurrentActiveBoard, selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { cloneDeep } from 'lodash'
 
-function ListColumns( { columns, createNewColumn, createNewCard, moveCards, deleteColumnDetails } ) {
+function ListColumns( { columns } ) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+
+
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter Column Title')
       return
@@ -24,7 +33,22 @@ function ListColumns( { columns, createNewColumn, createNewCard, moveCards, dele
       title: newColumnTitle
     }
 
-    createNewColumn(newColumnData)
+    const createdColumn = await createNewColumnAPI({
+      ...newColumnData,
+      boardId: board._id // hoặc boardId nếu tên biến là boardId
+    })
+
+    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
+
+    // Cập nhật state board
+    const newBoard = cloneDeep(board)
+    newBoard.columns.push(createdColumn)
+    newBoard.columnOrderIds.push(createdColumn._id)
+
+    //Cập nhập dữ liệu board trong Redux Store
+    dispatch(updateCurrentActiveBoard(newBoard))
+
     // Đóng trạng thái thêm column và clear input
     toggleOpenNewColumnForm()
     setNewColumnTitle('')
@@ -49,8 +73,6 @@ function ListColumns( { columns, createNewColumn, createNewCard, moveCards, dele
           <Column
             key={column._id}
             column={column}
-            createNewCard={createNewCard}
-            deleteColumnDetails={deleteColumnDetails}
           />
         )}
 

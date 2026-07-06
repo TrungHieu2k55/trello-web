@@ -7,11 +7,10 @@ import { DndContext, PointerSensor, useSensor, useSensors,
   DragOverlay, defaultDropAnimationSideEffects, closestCorners,
   pointerWithin,
   rectIntersection,
-  getFirstCollision, 
-  closestCenter} from '@dnd-kit/core'
+  getFirstCollision,
+  closestCenter } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { cloneDeep, debounce, isEmpty } from 'lodash'
-
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Card/Card'
@@ -373,12 +372,7 @@ function BoardContent({
         height: (theme) => theme.trello.boardContentHeight,
         p: '10px 0'
       }}>
-        <ListColumns
-          columns={ oderedColumns }
-          createNewColumn={createNewColumn}
-          createNewCard={createNewCard}
-          deleteColumnDetails={deleteColumnDetails}
-        />
+        <ListColumns columns={ oderedColumns }/>
         <DragOverlay dropAnimation={dropAnimation}>
           {(!activeDragItemType) && null}
           {(activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}

@@ -6,68 +6,29 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 
 // import { mockData } from '~/apis/mock-data'
-import { fetchBoardDetailsAPI,
-  createNewColumnAPI,
-  createNewCardAPI,
+import {
   updateBoardDetailsAPI,
   updateColumnsDetailsAPI,
   moveCardToDifferentColumnAPI,
   deleteColumnDetailsAPI
 } from '~/apis/index'
 import { useState, useEffect } from 'react'
-import { toast } from 'react-toastify'
+import { fetchBoardDetailsAPI, updateCurrentActiveBoard, selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 function Board() {
-  const [board, setBoard] = useState(null)
+  const dispatch = useDispatch()
+  // const [board, setBoard] = useState(null)
+
+  const board = useSelector(selectCurrentActiveBoard)
 
   useEffect(() => {
     const boardId = '699c1e1facd2d1f67ce15f4f'
     //call api
-    fetchBoardDetailsAPI(boardId).then(board => {
-      setBoard(board)
-    })
-  }, [])
+    dispatch(fetchBoardDetailsAPI(boardId))
+  }, [dispatch])
 
-  // Func gọi API tạo mới Column làm lại dữ liệu state board
-  const createNewColumn = async (newColumnData) => {
-
-    // Gọi API tạo column mới
-    const createdColumn = await createNewColumnAPI({
-      ...newColumnData,
-      boardId: board._id // hoặc boardId nếu tên biến là boardId
-    })
-
-    // Cập nhật state board
-    const newBoard = { ...board }
-    board.columns.push(createdColumn)
-    board.columnOrderIds.push(createdColumn._id)
-
-    // Cập nhật state
-    setBoard(newBoard)
-  }
-
-  // Func gọi API tạo mới Card làm lại dữ liệu state board
-  const createNewCard = async (newCardData) => {
-    // Gọi API tạo column mới
-    const createdCard = await createNewCardAPI({
-      ...newCardData,
-      boardId: board._id // hoặc boardId nếu tên biến là boardId
-    })
-
-    // Cập nhật state board
-    const newBoard = { ...board }
-    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
-    if (columnToUpdate) {
-      columnToUpdate.cards.push(createdCard)
-      columnToUpdate.cardOrderIds.push(createdCard._id)
-    }
-    console.log(columnToUpdate)
-
-
-    // Cập nhật state
-    setBoard(newBoard)
-  }
 
   // Func gọi API kéo thả columns khi xong handleEnd
   const moveColumns = (dndOrderedColumns) => {
@@ -76,7 +37,8 @@ function Board() {
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     //Gọi API Board
     updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds })
@@ -91,7 +53,8 @@ function Board() {
       columnToUpdate.cards = dndOrderedCards
       columnToUpdate.cardOrderIds = dndOrderedCardIds
     }
-    setBoard(newBoard)
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     //Gọi API Board
     updateColumnsDetailsAPI(columnId, { cardOrderIds: columnToUpdate.cardOrderIds })
@@ -119,20 +82,6 @@ function Board() {
     })
   }
 
-  // function xóa column và card trong column
-  const deleteColumnDetails = (columnId) => {
-    //Update board state
-    const newBoard = { ...board }
-    newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
-    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
-    setBoard(newBoard)
-
-    //api
-    deleteColumnDetailsAPI(columnId).then(res => {
-      toast.success(res?.deleteResult)
-    })
-  }
-
   if (!board) {
     return (
       <Box sx={{
@@ -151,12 +100,10 @@ function Board() {
       <BoardBar board={board}/>
       <BoardContent
         board={board}
-        createNewCard={createNewCard}
-        createNewColumn={createNewColumn}
+
         moveColumns={moveColumns}
         moveCardInTheSameColumn={moveCardInTheSameColumn}
         moveCardToDifferentColumn={moveCardToDifferentColumn}
-        deleteColumnDetails={deleteColumnDetails}
       />
     </Container>
   )
