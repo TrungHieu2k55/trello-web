@@ -15,6 +15,7 @@ import {
 import { useState, useEffect } from 'react'
 import { fetchBoardDetailsAPI, updateCurrentActiveBoard, selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 
 function Board() {
@@ -23,11 +24,12 @@ function Board() {
 
   const board = useSelector(selectCurrentActiveBoard)
 
+  const { boardId } = useParams()
+
   useEffect(() => {
-    const boardId = '699c1e1facd2d1f67ce15f4f'
     //call api
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
 
   // Func gọi API kéo thả columns khi xong handleEnd
