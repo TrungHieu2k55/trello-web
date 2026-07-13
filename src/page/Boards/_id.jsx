@@ -2,9 +2,6 @@ import Container from '@mui/material/Container'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
-import Box from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
-
 // import { mockData } from '~/apis/mock-data'
 import {
   updateBoardDetailsAPI,
@@ -12,6 +9,7 @@ import {
   moveCardToDifferentColumnAPI,
   deleteColumnDetailsAPI
 } from '~/apis/index'
+import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
 import { useState, useEffect } from 'react'
 import { fetchBoardDetailsAPI, updateCurrentActiveBoard, selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -85,15 +83,7 @@ function Board() {
   }
 
   if (!board) {
-    return (
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center', gap: 2, width:'100vw', height: '100vh'
-      }}>
-        <CircularProgress />
-      </Box>
-    )
+    return <PageLoadingSpinner caption='Loading Board ...' />
   }
 
   return (
