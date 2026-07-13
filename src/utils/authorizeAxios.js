@@ -40,7 +40,7 @@ authorizeAxiosInstance.interceptors.response.use(
     /** Mọi mã http status code nằm trong 200- 299 là error rơi vào đây */
 
     // Kỹ thuật chặn spam click
-    interceptorLoadingElements(true)
+    interceptorLoadingElements(false)
 
     //Xử lý lỗi tập trung phần hiển thị thông báo lỗi từ mọi API
     let errorMessage = error?.message
