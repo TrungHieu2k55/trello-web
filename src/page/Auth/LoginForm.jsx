@@ -35,6 +35,7 @@ function LoginForm() {
   const verifiedEmail = searchParams.get('verifiedEmail')
   const submitLogIn = (data) => {
     const { email, password } = data
+
     toast.promise(dispatch(loginUserAPI( { email, password })), { pending: 'Logging in...' }
     ).then(res => {
       if (!res.error) { navigate('/')}
