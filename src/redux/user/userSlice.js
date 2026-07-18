@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authorizeAxiosInstance from '~/utils/authorizeAxios'
 import { API_ROOT } from '~/utils/constants'
-
+import { toast } from 'react-toastify'
 
 // Khởi tạo một giá trị slice state trong redux
 const initialState = {
@@ -14,6 +14,17 @@ export const loginUserAPI = createAsyncThunk(
   async (data) => {
     const response = await authorizeAxiosInstance.post(`${API_ROOT}/v1/users/login`, data)
     // axios trả về kết quả property của nó là data
+    return response.data
+  }
+)
+
+export const logoutUserAPI = createAsyncThunk(
+  'user/logoutUserAPI',
+  async (showSuccessMessage = true) => {
+    const response = await authorizeAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
+    if (showSuccessMessage) {
+      toast.success('Logged out successfully!')
+    }
     return response.data
   }
 )
@@ -31,6 +42,10 @@ export const userSlice = createSlice({
       const user = action.payload
 
       state.currentUser = user
+    }),
+    builder.addCase(logoutUserAPI.fulfilled, (state, action) => {
+
+      state.currentUser = null
     })
   }
 })
