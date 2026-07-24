@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from '~/App.jsx'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
+import GlobalStyles from '@mui/material/GlobalStyles'
 import theme from '~/theme'
 import { ToastContainer } from 'react-toastify'
 
@@ -37,6 +38,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             confirmationButtonProps: { color: 'secondary', variant: 'outlined' },
             buttonOrder: ['confirm', 'cancel']
           }}>
+            <GlobalStyles styles={{ a: { textDecoration: 'none' } }}/>
             <CssBaseline />
             <App />
             <ToastContainer theme='colored' />

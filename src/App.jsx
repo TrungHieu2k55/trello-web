@@ -7,6 +7,9 @@ import Auth from '~/page/Auth/Auth'
 import AccountVerification from '~/page/Auth/AccountVerification'
 import { useSelector } from 'react-redux'
 import { selectCurrentUser } from '~/redux/user/userSlice'
+import Settings from '~/page/Settings/Settings'
+import Boards from '~/page/Boards'
+
 
 const PrivateRoute = ({ user }) => {
   if (!user) return <Navigate to='/login' replace={true} />
@@ -18,12 +21,16 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={
-        <Navigate to='/boards/699c1e1facd2d1f67ce15f4f' replace={true} />
+        <Navigate to='/boards' replace={true} />
       } />
 
       <Route element={<PrivateRoute user={currentUser} />}>
         {/* Board Details */}
         <Route path='/boards/:boardId' element={<Board />} />
+        <Route path='/boards' element={<Boards />} />
+
+        <Route path='/settings/account' element={<Settings/>}/>
+        <Route path='/settings/security' element={<Settings/>}/>
       </Route>
 
       {/* Authencation */}
